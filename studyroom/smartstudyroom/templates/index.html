@@ -1,0 +1,14 @@
+{% extends "base_generic.html" %}
+
+{% block title %}<title>Smart 열람실</title>{% endblock %}
+
+{% block content %}
+  <h1>열람실</h1>
+  {% for room in room_list %}
+      <li>
+        {{room.name}}
+      </li>
+    {% endfor %}
+{% endblock %}
+{% load static %} 
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
