@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.hashers import make_password, check_password
 from .models import Account
-
+from django.contrib.auth import login, authenticate
 # Create your views here.
 def register(request):
     if request.method == "GET":
@@ -20,13 +20,13 @@ def register(request):
             res_data['error'] = '비밀번호가 다릅니다.'
         else :
             account = Account(student_num = student_num, username = username, password = make_password(password))
+            user = authenticate(username=username, password=password)
             account.save()
         return render(request, 'register.html', res_data)
 
 def login(request):
     response_data = {}
-    return render(request, 'login.html')
-    ''' if request.method == "GET" :
+    if request.method == "GET" :
         return render(request, 'login.html')
     elif request.method == "POST":
         login_student_num = request.POST.get('student_num', None)
@@ -42,7 +42,7 @@ def login(request):
             else:
                 response_data['error'] = "비밀번호를 틀렸습니다."
 
-        return render(request, 'login.html', response_data) '''
+        return render(request, 'login.html', response_data)
 
 def home(request):
     account_id = request.session.get('user')

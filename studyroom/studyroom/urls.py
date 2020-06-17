@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('smartstudyroom/', include('smartstudyroom.urls')),
     path('', RedirectView.as_view(url='smartstudyroom/')),
-    path('accounts/signup/', register, name='signup'),
+    path('accounts/signup/', register, name='register'),
     path('accounts/login/', login, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
