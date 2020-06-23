@@ -1,20 +1,20 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import views, models, login, authenticate
+from django.contrib.auth import login, authenticate
 
-from .forms import UserForm
+from .forms import SignUpForm
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def signup(request):
-    if request.method == "POST":
-        form = UserForm(request.POST)
-    
-        if form.is_valid():
-            new_user = models.User.objects.create_user(**form.cleaned_data)
-            user = authenticate(username=form.cleaned_data.get('username'), password=form.cleaned_data.get('password'))
-            login(request, new_user)
-        
+    form = SignUpForm(request.POST)
+    print(form)
+    if form.is_valid():
+        form.save()
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password1')
+        user = authenticate(username=username, password=password)
+        login(request, user)
         return redirect('index')
-
     else:
-        form = UserForm()
-
-    return render(request, 'signup.html', {'form': form})
+        form = SignUpForm()
+    return render(request, 'signup.html',{'form':form})

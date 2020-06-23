@@ -3,13 +3,11 @@
 {% block title %}<title>Smart 열람실</title>{% endblock %}
 
 {% block content %}
-  <h1>열람실</h1>
-  {{user.get_username}}
+  <h1>Smart Studyroom</h1>
   {% for room in room_list %}
       <li>
-        {{room.name}}
+        <a href="{{ room.get_absolute_url }}">{{room.name}}</a>
       </li>
     {% endfor %}
 {% endblock %}
 {% load static %} 
-<link rel="stylesheet" href="{% static 'css/styles.css' %}">

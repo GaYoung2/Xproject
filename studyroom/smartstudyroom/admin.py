@@ -8,3 +8,5 @@ class SeatInline(admin.TabularInline):
 class roomAdmin(admin.ModelAdmin):
     list_display = ('name', 'location')
     inlines = [SeatInline]
+
+admin.site.register(Seat)

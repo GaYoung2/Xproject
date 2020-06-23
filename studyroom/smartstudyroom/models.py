@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid 
+from django.urls import reverse
 # Create your models here.
 class Room(models.Model):
     name = models.CharField(max_length=200)
@@ -8,23 +9,26 @@ class Room(models.Model):
     row = models.IntegerField(null=True)
     column = models.IntegerField(null=True)
 
+    def get_absolute_url(self):
+        return reverse('room-detail', args=[str(self.id)])
+
+
     #language = models.ForeignKey('Language', on_delete=models.SET_NULL, null=True)
     #genre = models.ManyToManyField(Genre, help_text='Select a genre for this book')
 
 class Seat(models.Model):
-    seat_id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text='Unique ID for this particular book across whole library')
-    #seat_num = models.IntegerField(null=True)
-    missed_time = models.FloatField(null=True)
+    seat_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    seat_num = models.IntegerField(null=True)
+    reserved_time = models.TimeField(null=True,blank=True)
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
-    #present_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    SIT_STATUS = (
+    SEAT_STATUS = (
         ('u', 'Use'),
-        ('m', 'Missed'),
+        ('r', 'Reserve'),
         ('a', 'Available'),
     )
     status = models.CharField(
         max_length=1,
-        choices=SIT_STATUS,
+        choices=SEAT_STATUS,
         blank=True,
         default='a',
         help_text='Present Sit Status',
