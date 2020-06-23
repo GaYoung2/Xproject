@@ -1,0 +1,128 @@
+{% extends "base_generic.html" %}
+<html lang="en">
+
+{% block content %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .seat {
+            width: 50px;
+            height: 50px;
+        }
+        .clicked {
+            background-color: antiquewhite;
+            color: black;
+        }
+        .reserved {
+            background-color: rgba(78, 78, 78);
+            color: white;
+        }
+        .used {
+            background-color: red;
+            color: white;
+        }
+        .available {
+            background-color: lightgreen;
+            color: white;
+        }
+    </style>
+    <h1>정보통신공학과 스터디룸 좌석 현황</h1>
+    <p>{{room.location}}</p>
+    <div class="seat-wrapper" id="seat-wrapper"></div>
+    <br>
+    {% if user.is_authenticated %}
+      <form action="{{pk}}/reservation" method="get">
+        <input type="hidden" value="" id="seat" name="seat">
+        <input type="submit" value="예약" onClick="reservation()">
+      </form>
+    {% endif %}
+<script>
+    let test = [];
+    let selectedSeats = new Array();
+    let selectedSeatsMap = [];
+    const seatWrapper = document.querySelector(".seat-wrapper");
+    let clicked = "";
+    let div = "";
+    let used = "";
+    let available = "";
+    let l = {{seat_list}}
+    let s = {{status}}
+
+    let x={{room.column}};
+    let y={{room.row}};
+    let seatCnt = 0
+    for (let i = 1; i <= y; i++) {
+        div = document.createElement("div");
+        seatWrapper.append(div);
+        for (let j = 1; j <= x; j++) {
+            seatCnt++;
+            const input = document.createElement('input');
+            input.type = "button";
+            input.name = "seats";
+            input.classList = "seat";
+            //3중포문을 사용하지 않기위해 
+            mapping(input, seatCnt);
+            div.append(input);
+            for(let k = 0; k<{{room.column}}*{{room.row}}; k++){
+                if(seatCnt==l[k]){
+                    if(s[k]==0){
+                        input.classList.add("available");
+                    }
+                    else{
+                        input.classList.add("used");
+                    }
+                }
+            }
+            input.addEventListener('click', function(e) {
+                console.log(e.target.value);
+                //중복방지 함수
+                selectedSeats = selectedSeats.filter((element, index) => selectedSeats.indexOf(element) != index);
+
+                //click class가 존재할때(제거해주는 toggle)
+                if (input.classList.contains("clicked")) {
+                    document.querySelector("#seat").value = "";
+                    input.classList.remove("clicked");
+                    input.classList.add("available");
+                    clicked = document.querySelectorAll(".clicked");
+                    selectedSeats.splice(selectedSeats.indexOf(e.target.value), 1);
+                    clicked.forEach((data) => {
+                        selectedSeats.push(data.value);
+                    });
+                    //click class가 존재하지 않을때 (추가해주는 toggle)
+                } 
+                else {
+                    if(selectedSeats.length > 0)
+                        return 1;
+                    document.querySelector("#seat").value = e.target.value;
+                    if(input.classList.contains("available")) {
+                        input.classList.remove("available");
+                        input.classList.add("clicked");
+                        clicked = document.querySelectorAll(".clicked");
+                        clicked.forEach((data) => {
+                            selectedSeats.push(data.value);
+                        })
+                    } 
+                }
+                console.log(selectedSeats);
+            })
+        }
+
+    }
+
+    function mapping(input, value) {
+        input.value = value;
+    }
+
+    function reservation() {
+        let seats = document.querySelector("#seat-wrapper").querySelectorAll("input");
+        seats.forEach(seat => {
+            if (selectedSeats.includes(seat.value)) {
+                seat.classList.remove("clicked");
+                seat.classList.add("reserved");
+            }
+        });
+    }
+</script>
+{% endblock%}
+</html>

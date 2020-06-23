@@ -1,0 +1,76 @@
+{% extends "base_generic.html" %}
+<html lang="en">
+
+{% block content %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .seat {
+            width: 50px;
+            height: 50px;
+        }
+        .used {
+            background-color: red;
+            color: white;
+        }
+        .reserved {
+            background-color: blue;
+            color: white;
+        }
+        .available {
+            background-color: lightgreen;
+            color: white;
+        }
+    </style>
+    <h1>정보통신공학과 스터디룸 좌석 현황</h1>
+    <p>{{room.location}}</p>
+    <div class="seat-wrapper" id="seat-wrapper"></div>
+<script>
+    let test = [];
+    let selectedSeats = new Array();
+    let selectedSeatsMap = [];
+    const seatWrapper = document.querySelector(".seat-wrapper");
+    let div = "";
+    let used = "";
+    let available = "";
+    let l = {{seat_list}}
+    let s = {{status}}
+
+    let x={{room.column}};
+    let y={{room.row}};
+    let seatCnt = 0
+    for (let i = 1; i <= y; i++) {
+        div = document.createElement("div");
+        seatWrapper.append(div);
+        for (let j = 1; j <= x; j++) {
+            seatCnt++;
+            const input = document.createElement('input');
+            input.type = "button";
+            input.name = "seats";
+            input.classList = "seat";
+            //3중포문을 사용하지 않기위해 
+            mapping(input, seatCnt);
+            div.append(input);
+            for(let k = 0; k<{{room.column}}*{{room.row}}; k++){
+                if(seatCnt==l[k]){
+                    if(s[k]==0){
+                        input.classList.add("available");
+                    }else if(s[k]==2){
+                        input.classList.add("reserved");
+                    }
+                    else{
+                        input.classList.add("used");
+                    }
+                }
+            }
+        }
+
+    }
+
+    function mapping(input, value) {
+        input.value = value;
+    }
+</script>
+{% endblock%}
+</html>
