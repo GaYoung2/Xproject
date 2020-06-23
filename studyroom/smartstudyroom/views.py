@@ -19,7 +19,7 @@ def room_detail_view(request, pk):
     room = get_object_or_404(Room, pk=pk)
     seat_list = []
     status_list = []
-    data = transmit()
+    data = transmit(room.ip)
     for i in range(1,7):
         seat_obj = Seat.objects.get(room=room, seat_num=i)
         seat_list.append((seat_obj.seat_num))

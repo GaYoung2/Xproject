@@ -8,6 +8,7 @@ class Room(models.Model):
     location = models.CharField(max_length=200)
     row = models.IntegerField(null=True)
     column = models.IntegerField(null=True)
+    ip  = models.CharField(max_length=200)
 
     def get_absolute_url(self):
         return reverse('room-detail', args=[str(self.id)])
